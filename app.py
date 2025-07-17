@@ -2,10 +2,13 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_httpauth import HTTPBasicAuth
+from flask_cors import CORS
+from flask_httpauth import current_user as auth_user
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  
+app.secret_key = 'your_secret_key' 
 
+CORS(app, origins=["http://localhost:5173"])
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -31,8 +34,9 @@ def load_user(user_id):
 @auth.verify_password
 def verify_password(username, password):
     if username in users and check_password_hash(users[username]['password'], password):
-        return User(username)
+        return username  
     return None
+
 
 @app.route('/')
 def home():
@@ -97,7 +101,7 @@ def logout():
 @app.route('/api/protected', methods=['GET'])
 @auth.login_required
 def api_protected():
-    return jsonify(message=f'Hello {current_user.id}, you have accessed a protected API route!')
+    return jsonify(message=f'Hello {auth.current_user()}, you have accessed a protected API route!')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

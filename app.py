@@ -3,12 +3,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_httpauth import HTTPBasicAuth
 from flask_cors import CORS
-from flask_httpauth import current_user as auth_user
+from flask_login import current_user
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key' 
 
-CORS(app, origins=["http://localhost:5173"])
+CORS(app, origins=["http://localhost:5174"])
 
 login_manager = LoginManager()
 login_manager.init_app(app)
